@@ -1,11 +1,11 @@
 package com.android_development.todoapp
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 
 class Adapter(
@@ -52,20 +52,23 @@ class Adapter(
                 .show()
         }
 
-        // DELETE
+
         holder.btnDelete.setOnClickListener {
-            viewModel.dlt(task)
+            showDeleteConfirmation(holder, task)
         }
 
-        // Optional: Long-press for confirmation
         holder.itemView.setOnLongClickListener {
-            AlertDialog.Builder(holder.itemView.context)
-                .setTitle("Delete Task")
-                .setMessage("Are you sure you want to delete this task?")
-                .setPositiveButton("Yes") { _, _ -> viewModel.dlt(task) }
-                .setNegativeButton("No", null)
-                .show()
+            showDeleteConfirmation(holder, task)
             true
         }
+    }
+
+    private fun showDeleteConfirmation(holder: TaskViewHolder, task: TaskEntity) {
+        AlertDialog.Builder(holder.itemView.context)
+            .setTitle("Delete Task")
+            .setMessage("Are you sure you want to delete this task?")
+            .setPositiveButton("Yes") { _, _ -> viewModel.dlt(task) }
+            .setNegativeButton("No", null)
+            .show()
     }
 }

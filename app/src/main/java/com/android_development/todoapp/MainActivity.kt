@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     private val taskViewModel: TaskViewModel by viewModels()
     private lateinit var adapter: Adapter
     private lateinit var editTask: EditText
+    private lateinit var editDesc: EditText
     private lateinit var btnAdd: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         editTask = findViewById(R.id.editTask)
+        editDesc = findViewById(R.id.editdesc)
         btnAdd = findViewById(R.id.btnAdd)
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
 
@@ -28,20 +30,20 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        // 1️⃣ Observe Room LiveData
         taskViewModel.all.observe(this, Observer { tasks ->
             adapter.submitList(tasks)
         })
 
-        // 2️⃣ Fetch notes from API and save to Room
-        taskViewModel.fetchNotes()  // <-- minimal addition
+        taskViewModel.fetchNotes()
 
-        // Add Task button
         btnAdd.setOnClickListener {
             val taskTitle = editTask.text.toString()
+            val taskDescription = editDesc.text.toString()
+
             if (taskTitle.isNotEmpty()) {
-                taskViewModel.add(taskTitle, "") // empty desc for now
+                taskViewModel.add(taskTitle, taskDescription)
                 editTask.text.clear()
+                editDesc.text.clear()
             }
         }
     }
